@@ -1,3 +1,4 @@
+// Package roman provides methods to convert roman numbers to arabic and vice versa.
 package roman
 
 import (
@@ -38,7 +39,7 @@ func (r Roman) Roman() string {
 	return r.roman
 }
 
-// Roman returns arabic representation of the number.
+// Arabic returns arabic representation of the number.
 func (r Roman) Arabic() int {
 	return r.arabic
 }
