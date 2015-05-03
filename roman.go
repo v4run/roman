@@ -6,16 +6,18 @@ import (
 )
 
 var (
-	decimals map[string]int = map[string]int{"": 0, "I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
-	values                  = []int{1, 5, 10, 50, 100, 500, 1000}
-	romans   map[int]string = map[int]string{0: "", 1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI", 7: "VII", 8: "VIII", 9: "IX", 10: "X", 50: "L", 100: "C", 500: "D", 1000: "M"}
+	decimals = map[string]int{"": 0, "I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+	values   = []int{1, 5, 10, 50, 100, 500, 1000}
+	romans   = map[int]string{0: "", 1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI", 7: "VII", 8: "VIII", 9: "IX", 10: "X", 50: "L", 100: "C", 500: "D", 1000: "M"}
 )
 
+// Roman represent a roman numeral
 type Roman struct {
 	roman  string
 	arabic int
 }
 
+// New creates a Roman from r (roman number). Throws an error if an invalid roman numberal is given.
 func New(r string) (*Roman, error) {
 	upper := strings.ToUpper(r)
 	arabic, err := toArabic(upper)
@@ -25,15 +27,18 @@ func New(r string) (*Roman, error) {
 	return &Roman{roman: upper, arabic: arabic}, nil
 }
 
+// FromArabic creates a Roman from a (arabic number).
 func FromArabic(a int) *Roman {
 	r := toRoman(a)
 	return &Roman{roman: r, arabic: a}
 }
 
+// Roman returns roman representation of the number.
 func (r Roman) Roman() string {
 	return r.roman
 }
 
+// Roman returns arabic representation of the number.
 func (r Roman) Arabic() int {
 	return r.arabic
 }
@@ -76,7 +81,7 @@ func toRoman(a int) string {
 
 func toArabic(v string) (int, error) {
 	if len(v) == 0 {
-		return -1, fmt.Errorf("Number can't be empty.")
+		return -1, fmt.Errorf("number can't be empty")
 	}
 	counts := map[string]int{
 		"I": 0,
@@ -104,16 +109,16 @@ func toArabic(v string) (int, error) {
 		counts[cur]++
 
 		if compoundFirst > 0 && decimals[nxt] >= compoundFirst {
-			return -1, fmt.Errorf("Invalid symbol %s at position %d", nxt, i+2)
+			return -1, fmt.Errorf("invalid symbol %s at position %d", nxt, i+2)
 		}
 
 		switch cur {
 		case `D`, `L`, `V`:
 			if counts[cur] > 1 {
-				return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+				return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 			}
 			if nxt != "" && decimals[cur] < decimals[nxt] {
-				return -1, fmt.Errorf("Invalid symbol %c at position %d", v[i+1], i+2)
+				return -1, fmt.Errorf("invalid symbol %c at position %d", v[i+1], i+2)
 			}
 			compoundFirst = 0
 			sum += decimals[cur]
@@ -123,7 +128,7 @@ func toArabic(v string) (int, error) {
 			counts["C"] = 0
 			counts["M"] = 0
 			if counts[cur] > 3 {
-				return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+				return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 			}
 			if decimals[cur] < decimals[nxt] {
 				switch nxt {
@@ -131,7 +136,7 @@ func toArabic(v string) (int, error) {
 					compoundFirst = decimals[cur]
 					sum -= compoundFirst
 				default:
-					return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+					return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 				}
 			} else {
 				compoundFirst = 0
@@ -143,7 +148,7 @@ func toArabic(v string) (int, error) {
 			counts["C"] = 0
 			counts["M"] = 0
 			if counts[cur] > 3 {
-				return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+				return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 			}
 
 			if decimals[cur] < decimals[nxt] {
@@ -152,7 +157,7 @@ func toArabic(v string) (int, error) {
 					compoundFirst = decimals[cur]
 					sum -= compoundFirst
 				default:
-					return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+					return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 				}
 			} else {
 				compoundFirst = 0
@@ -164,7 +169,7 @@ func toArabic(v string) (int, error) {
 			counts["X"] = 0
 			counts["M"] = 0
 			if counts[cur] > 3 {
-				return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+				return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 			}
 			if decimals[cur] < decimals[nxt] {
 				compoundFirst = decimals[cur]
@@ -179,17 +184,17 @@ func toArabic(v string) (int, error) {
 			counts["X"] = 0
 			counts["C"] = 0
 			if counts[cur] > 3 {
-				return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+				return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 			}
 			compoundFirst = 0
 			sum += decimals[cur]
 
 		default:
-			return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+			return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 		}
 
 		if i > 0 && counts[prev] >= 2 && decimals[prev] < decimals[cur] {
-			return -1, fmt.Errorf("Invalid symbol %s at position %d", cur, i+1)
+			return -1, fmt.Errorf("invalid symbol %s at position %d", cur, i+1)
 		}
 
 		prev = cur
